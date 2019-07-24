@@ -61,7 +61,7 @@ export default class FieldService {
             setTimeout(() => {
                 const clonedOperations = this.operations.map((operation) => operation);
                 resolve(clonedOperations);
-            }, 10);
+            }, 3000);
         });
     }
 

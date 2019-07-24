@@ -1,16 +1,27 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import FieldService from './FieldService';
+import Operation, { OperationType, Assessment } from './models/Operation';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {
+const fieldService = new FieldService();
 
+export default new Vuex.Store({
+  state() {
+    return {
+      operations: [],
+    };
   },
   mutations: {
-
+    setOperations(state: any, operations: Operation[]) {
+      state.operations = operations;
+    },
   },
   actions: {
-
+    async loadOperations({ commit }): Promise<void> {
+      const operations = await fieldService.getOperations();
+      commit('setOperations', operations);
+    },
   },
 });

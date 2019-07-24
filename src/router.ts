@@ -12,6 +12,20 @@ export default new Router({
       component: Home,
     },
     {
+      path: '/field/:fieldId',
+      name: 'field',
+      component: () => import(/* webpackChunkName: "field" */ './views/Field.vue'),
+      props: true,
+      children: [
+        {
+          path: 'operation/:operationId',
+          name: 'operation',
+          component: () => import(/* webpackChunkName: "operation" */ './components/Operation.vue'),
+          props: true,
+        },
+      ],
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
