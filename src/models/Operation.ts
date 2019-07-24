@@ -6,31 +6,31 @@ export enum OperationType {
     FERTILIZATION = 2,  // Внесение удобрений
     WATERING = 3,       // Полив
     RIGGING = 4,        // Прикатывание
-    HARVESTING = 5      // Сбор урожая
+    HARVESTING = 5,      // Сбор урожая
 }
 
 export enum Assessment {
     EXCELLENT = 0,      // Отлично
     SATISFACTORILY = 1,	// Удовлетворительно
-    BADLY = 2           // Плохо
+    BADLY = 2,           // Плохо
 }
 
 export default class Operation {
-    id?: string | null;             // ID Операции
-    type: OperationType;            // Тип операции
-    date: TDate;                    // Дата проведения операции
-    area: number;                   // Площадь проведения операции (Га)
-    comment?: string | null;        // Комментарий
-    assessment?: Assessment | null; // Оценка качества проведенной операции
+    public id?: string | null;             // ID Операции
+    public type: OperationType;            // Тип операции
+    public date: TDate;                    // Дата проведения операции
+    public area: number;                   // Площадь проведения операции (Га)
+    public comment?: string | null;        // Комментарий
+    public assessment?: Assessment | null; // Оценка качества проведенной операции
 
-    constructor (args: Operation) {
+    constructor(args: Operation) {
         const {
             id = null,
             type,
             date,
             area,
             comment = null,
-            assessment = null
+            assessment = null,
         } = args;
         this.id = id;
         this.type = type;
