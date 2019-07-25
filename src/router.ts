@@ -23,6 +23,12 @@ export default new Router({
           component: () => import(/* webpackChunkName: "operation" */ './components/Operation.vue'),
           props: true,
         },
+        {
+          path: 'new',
+          name: 'new-operation',
+          component: () => import(/* webpackChunkName: "operation" */ './components/Operation.vue'),
+          props: true,
+        },
       ],
     },
     {
