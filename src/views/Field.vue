@@ -19,22 +19,32 @@
       <el-table-column
         prop="date"
         label="Дата"
-        :formatter="dateFormatter"
+        :formatter="(row, column, cellValue) => dateFormatter(cellValue)"
+        :sort-by="(row) => sortByDate(row.date)"
+        sortable
         >
       </el-table-column>
       <el-table-column
         prop="type"
         label="Операция"
-        :formatter="typeFormatter"
+        :formatter="(row, column, cellValue) => typeFormatter(cellValue)"
+        :sort-by="(row) => typeFormatter(row.type)"
+        sortable
         >
       </el-table-column>
       <el-table-column
-        label="Культура">
+        label="Культура"
+        sortable
+        >
         <div>Пшеница</div>
       </el-table-column>
       <el-table-column
         prop="assessment"
-        label="Качество">
+        label="Качество"
+        :formatter="(row, column, cellValue) => assessmentFormatter(cellValue)"
+        :sort-method="(a,b) => sortMethodAssessment(a.assessment, b.assessment)"
+        sortable
+        >
       </el-table-column>
     </el-table>
     <router-view/>
@@ -69,15 +79,18 @@ export default class Field extends Vue {
   public operations!: Operation[];
   public loading: boolean = false;
   public planned: boolean = true;
+
   public async mounted() {
     this.loading = true;
     await this.loadOperations();
     this.loading = false;
   }
+
   public rowClick(row: any) {
     this.$router.push({ name: 'operation', params: { operationId: row.id } });
   }
-  public dateFormatter(row: any, column: any, cellValue: TDate) {
+
+  public dateFormatter(cellValue: TDate) {
     interface IMap {
         [key: number]: string;
     }
@@ -97,8 +110,35 @@ export default class Field extends Vue {
     };
     return `${cellValue.day} ${monthMap[cellValue.month]} ${cellValue.year}`;
   }
-  public typeFormatter(row: any, column: any, cellValue: OperationType) {
-    return OperationType[cellValue];
+
+  public typeFormatter(cellValue: OperationType) {
+    return this.$t(OperationType[cellValue]);
+  }
+
+  public assessmentFormatter(cellValue?: Assessment | null) {
+    if (cellValue == null) {
+      return '';
+    }
+    return this.$t(Assessment[cellValue]);
+  }
+
+  public sortByDate(cellValue: TDate) {
+    return cellValue.year * 10000 + cellValue.month * 100 + cellValue.day;
+  }
+
+  public sortMethodAssessment(a?: Assessment | null, b?: Assessment | null) {
+    const aNil = a == null;
+    const bNil = b == null;
+    if (aNil && bNil) {
+      return 0;
+    }
+    if (aNil) {
+      return 1;
+    }
+    if (bNil) {
+      return -1;
+    }
+    return (a as Assessment) - (b as Assessment);
   }
 }
 </script>
