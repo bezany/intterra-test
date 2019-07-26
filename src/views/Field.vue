@@ -3,11 +3,22 @@
   v-loading="loading"
   >
     <h3>Операции на поле {{ fieldId }}</h3>
-    <el-radio v-model="planned" :label="true">ЗАПЛАНИРОВАННЫЕ ОПЕРАЦИИ</el-radio>
-    <el-radio v-model="planned" :label="false">ВЫПОЛНЕННЫЕ ОПЕРАЦИИ</el-radio>
-    <el-button
-    @click="$router.push({ name: 'new-operation' })"
-    >Добавить операцию</el-button>
+    <div
+    style="display:flex; justify-content: space-between; align-items: center;"
+    >
+      <div>
+        <el-radio v-model="planned" :label="true">ЗАПЛАНИРОВАННЫЕ ОПЕРАЦИИ</el-radio>
+        <el-radio v-model="planned" :label="false">ВЫПОЛНЕННЫЕ ОПЕРАЦИИ</el-radio>
+      </div>
+      <div>
+        <el-button
+        @click="$router.push({ name: 'new-operation' })"
+        icon="el-icon-check"
+        type="success"
+        >Добавить операцию</el-button>
+      </div>
+    </div>
+    
     <el-table
       class="table"
       :data="operations"
@@ -41,10 +52,14 @@
       <el-table-column
         prop="assessment"
         label="Качество"
-        :formatter="(row, column, cellValue) => assessmentFormatter(cellValue)"
         :sort-method="(a,b) => sortMethodAssessment(a.assessment, b.assessment)"
         sortable
         >
+          <template v-slot="{ row, column, $index }">
+            <AssessmentView
+            :assessment="row.assessment"
+            />
+          </template>
       </el-table-column>
     </el-table>
     <router-view/>
@@ -55,20 +70,24 @@
 import { Component, Vue } from 'vue-property-decorator';
 import {
   mapActions,
-  mapState,
+  mapGetters,
 } from 'vuex';
 import Operation, { OperationType, Assessment } from '@/models/Operation';
 import TDate from '@/models/TDate';
+import AssessmentView from '@/components/AssessmentView.vue';
 
 @Component({
+  components: {
+    AssessmentView,
+  },
   props: {
     fieldId: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
   },
   computed: {
-    ...mapState(['operations']),
+    ...mapGetters(['plannedOperations', 'doneOperations']),
   },
   methods: {
     ...mapActions(['loadOperations']),
@@ -76,7 +95,8 @@ import TDate from '@/models/TDate';
 })
 export default class Field extends Vue {
   public loadOperations!: any;
-  public operations!: Operation[];
+  public plannedOperations!: Operation[];
+  public doneOperations!: Operation[];
   public loading: boolean = false;
   public planned: boolean = true;
 
@@ -88,6 +108,14 @@ export default class Field extends Vue {
 
   public rowClick(row: any) {
     this.$router.push({ name: 'operation', params: { operationId: row.id } });
+  }
+
+  get operations() {
+    if (this.planned) {
+      return this.plannedOperations;
+    } else {
+      return this.doneOperations;
+    }
   }
 
   public dateFormatter(cellValue: TDate) {
@@ -113,13 +141,6 @@ export default class Field extends Vue {
 
   public typeFormatter(cellValue: OperationType) {
     return this.$t(OperationType[cellValue]);
-  }
-
-  public assessmentFormatter(cellValue?: Assessment | null) {
-    if (cellValue == null) {
-      return '';
-    }
-    return this.$t(Assessment[cellValue]);
   }
 
   public sortByDate(cellValue: TDate) {

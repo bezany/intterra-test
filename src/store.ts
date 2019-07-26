@@ -23,5 +23,20 @@ export default new Vuex.Store({
       const operations = await fieldService.getOperations();
       commit('setOperations', operations);
     },
+    async operationById({ }, operId) {
+      return fieldService.getOperation(operId);
+    },
+  },
+  getters: {
+    plannedOperations(state) {
+      return state.operations.filter((el: Operation) => {
+        return el.assessment == null;
+      });
+    },
+    doneOperations(state) {
+      return state.operations.filter((el: Operation) => {
+        return el.assessment != null;
+      });
+    },
   },
 });

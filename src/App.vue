@@ -2,8 +2,15 @@
   <div id="app">
     <el-container>
       <el-header
+      class="header"
       id="nav">
-        <router-link to="/">Поля</router-link>
+        <el-menu
+        background-color="#091C28"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+        mode="horizontal" router>
+          <el-menu-item index="/">Поля</el-menu-item>
+        </el-menu>
       </el-header>
       <el-main>
         <router-view/>
@@ -13,21 +20,19 @@
 </template>
 
 <style>
+body, #app {
+  margin: 0;
+  padding: 0;
+}
+</style>
+
+<style scoped>
+.header {
+  background-color: #091C28;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
