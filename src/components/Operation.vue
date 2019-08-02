@@ -8,17 +8,21 @@
     custom-class="inner-dialog"
     top="0"
     >
-    <div>Операция: {{ operationId }}</div>
-    <div>Поле: {{ fieldId }}</div>
-    <el-form :model="operation" label-width="120px">
-       <el-form-item label="Комментарий">
-        <el-input type="textarea" v-model="operation.comment"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer">
-      <el-button type="success"
-      >Сохранить операцию</el-button>
-    </span>
+    <div
+    v-loading="loading"
+    >
+      <div>Операция: {{ operationId }}</div>
+      <div>Поле: {{ fieldId }}</div>
+      <el-form :model="operation" label-width="120px">
+        <el-form-item label="Комментарий">
+          <el-input type="textarea" v-model="operation.comment"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button type="success"
+        >Сохранить операцию</el-button>
+      </span>
+    </div>
   </el-dialog>
 </template>
 
@@ -41,11 +45,14 @@ export default class OperationEdit extends Vue {
   public fieldId!: string;
   public operationById!: any;
   public operation: object = {};
+  public loading: boolean = false;
   public close() {
     this.$router.push({ name: 'field', params: { fieldId: this.fieldId }});
   }
   public async mounted() {
+    this.loading = true;
     this.operation = (await this.operationById(this.operationId)) || {};
+    this.loading = false;
   }
 }
 </script>
