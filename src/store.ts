@@ -1,11 +1,15 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import FieldService from './FieldService';
+// import FieldService from './FieldService';
+import * as FieldService from './FieldService.js';
 import Operation, { OperationType, Assessment } from './models/Operation';
 
 Vue.use(Vuex);
 
-const fieldService = new FieldService();
+// const fieldService = new FieldService();
+const fieldService: any = {
+  ...FieldService,
+};
 
 export default new Vuex.Store({
   state() {
